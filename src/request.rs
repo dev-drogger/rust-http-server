@@ -12,11 +12,10 @@ pub struct Request {
 }
 
 impl Request {
-    pub fn parse(stream: &mut TcpStream) -> Result<Request> {
-        let mut reader = BufReader::new(stream.try_clone()?);
-
+    pub fn parse<R: BufRead>(reader: &mut R) -> Result<Request> {
         let mut request_line = String::new();
         reader.read_line(&mut request_line)?;
+
         let mut parts = request_line.trim().split_whitespace();
         let method = parts.next().unwrap_or("").to_string();
         let path = parts.next().unwrap_or("/").to_string();

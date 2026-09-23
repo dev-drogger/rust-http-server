@@ -2,7 +2,7 @@ mod request;
 mod response;
 mod thread_pool;
 use std::{
-    io::Result,
+    io::{BufRead, BufReader, Result},
     net::{TcpListener, TcpStream},
 };
 
@@ -32,11 +32,15 @@ fn main() -> Result<()> {
 }
 
 fn handle_connection(mut stream: TcpStream) -> Result<()> {
-    let request = Request::parse(&mut stream)?;
-    println!("{} {}", request.method, request.path);
+    let mut reader = BufReader::new(stream.try_clone()?);
 
-    let mut response = route(&request);
-    response.write_to(&mut stream)
+    loop {
+        let request = Request::parse(&mut reader)?;
+        println!("{} {}", request.method, request.path);
+
+        let mut response = route(&request);
+        response.write_to(&mut stream)?;
+    }
 }
 
 fn route(request: &Request) -> Response {

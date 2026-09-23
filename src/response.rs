@@ -54,7 +54,7 @@ impl Response {
             .or_insert_with(|| self.body.len().to_string());
         self.headers
             .entry("Connection".to_string())
-            .or_insert_with(|| "close".to_string());
+            .or_insert_with(|| "keep-alive".to_string());
 
         let mut response = format!("HTTP/1.1 {} {}\r\n", self.status, self.reason);
 
