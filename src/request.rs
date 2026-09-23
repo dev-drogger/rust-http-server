@@ -25,7 +25,7 @@ impl Request {
         let mut headers = HashMap::new();
         loop {
             let mut line = String::new();
-            let bytes_read = reader.read_line(&mut line);
+            let bytes_read = reader.read_line(&mut line)?;
 
             if bytes_read == 0 || line.trim().is_empty() {
                 break;
@@ -41,7 +41,7 @@ impl Request {
             .unwrap_or(0);
         let mut body = vec![0u8; content_length];
         if content_length > 0 {
-            reader.read_exact(&mut body);
+            reader.read_exact(&mut body)?;
         }
 
         Ok(Request {

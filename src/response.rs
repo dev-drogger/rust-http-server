@@ -62,7 +62,7 @@ impl Response {
             response.push_str(&format!("{}: {}\r\n", key, value));
         }
         response.push_str("\r\n");
-        stream.write_all(response.as_bytes());
+        stream.write_all(response.as_bytes())?;
         stream.write_all(&self.body)?;
         stream.flush()
     }
